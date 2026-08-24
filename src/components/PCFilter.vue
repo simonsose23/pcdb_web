@@ -87,9 +87,4 @@ let qBuilder = ref(new QueryBuilder())
   </div>
 </template>
 
-<style scoped>
-#container {
-  border: 2px solid #ffffff;
-  padding: 10px;
-}
-</style>
+<style scoped></style>

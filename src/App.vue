@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import PCFilter from './components/PCFilter.vue'
+import PolygonCanvas from './components/PolygonCanvas.vue'
+import { isPolygon, type Polygons } from './util/Polygon.ts'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const pc_metas = ref(null)
@@ -42,11 +44,19 @@ async function upload() {
         <template v-for="key in Object.keys(pc_metas[0])">
           <td>{{ key }}</td>
         </template>
+        <td>
+          Get SHP
+        </td>
       </tr>
       <template v-for="pc in pc_metas">
         <tr>
           <template v-for="val in Object.values(pc)">
-            <td>{{ val }}</td>
+            <td v-if="isPolygon(val)">
+              <PolygonCanvas :data="val as Polygons" :extent="{ width: 100, height: 80 }"></PolygonCanvas>
+            </td>
+            <td v-if="!isPolygon(val)">
+              {{ val }}
+            </td>
           </template>
           <td><a :href="'http://localhost:8080/shp/' + pc.ogc_fid">SHP</a></td>
         </tr>
