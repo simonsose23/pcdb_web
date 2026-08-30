@@ -7,6 +7,11 @@ import FilterNegation from './FilterNegation.vue';
 
 const model = defineModel()
 
+const err_msgs = ref<{ err_custom?: string, err_query?: string }>({
+  err_custom: undefined,
+  err_query: undefined
+})
+
 let customText = ""
 
 function addAe(new_ae: AtomicExpression) {
@@ -27,8 +32,14 @@ async function sendCustomRequest() {
       customText, headers: { "Content-Type": "text/plain" }
   })
 
-  model.value = await res.json()
   console.log(model.value)
+
+  if (res.status == 200) {
+    model.value = await res.json()
+    err_msgs.value!.err_custom = undefined
+  } else {
+    err_msgs.value!.err_custom = await res.text() as string
+  }
 }
 
 async function sendFilterRequest() {
@@ -39,9 +50,9 @@ async function sendFilterRequest() {
 
   if (res.status == 200) {
     model.value = await res.json()
-    console.log(model.value)
+    err_msgs.value.err_query = undefined
   } else {
-    model.value = null
+    err_msgs.value!.err_query = await res.text() as string
   }
 
 }
@@ -55,8 +66,15 @@ let qBuilder = ref(new QueryBuilder())
     <h3>Filter</h3>
     <div id="section">
       <p>Write own expression:</p>
-      <input type="text" v-model="customText">
-      <button @click="sendCustomRequest()">Send</button>
+      <div id="own_query">
+        <input type="text" v-model="customText">
+        <button @click="sendCustomRequest()">Send</button>
+      </div>
+      <!-- Error display -->
+      <span v-if="err_msgs.err_custom" style="display: flex;">
+        <p style="font-weight: bold; margin-right: 5px;">ERR</p>
+        <p>{{ err_msgs.err_custom }}</p>
+      </span>
     </div>
 
     <div id="section">
@@ -90,8 +108,16 @@ let qBuilder = ref(new QueryBuilder())
         </div>
       </template>
 
-      <!-- Send the request -->
-      <button @click="sendFilterRequest()">Send Filter Request</button>
+      <div>
+        <!-- Send the request -->
+        <button @click="sendFilterRequest()">Send Filter Request</button>
+
+        <!-- Error display -->
+        <span v-if="err_msgs.err_query" style="display: flex;">
+          <p style="font-weight: bold; margin-right: 5px;">ERR</p>
+          <p>{{ err_msgs.err_query }}</p>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -99,6 +125,8 @@ let qBuilder = ref(new QueryBuilder())
 <style scoped>
 #section {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 #section:last-child {
