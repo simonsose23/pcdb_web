@@ -22,7 +22,8 @@ function removeExpr() {
 
 <template>
   <div id="negation">
-    NOT
+    <p style="font-weight: bold; color: white; border: 2px solid white; border-radius: 10px;
+    align-self: center;">NOT</p>
 
     <!-- Render the negated expression -->
     <FilterOperator v-if="isOp(neg?.expression)" :op="neg!.expression as Operator" />
@@ -48,5 +49,7 @@ function removeExpr() {
   padding: 10px;
   background-color: red;
   border: 2px white solid;
+  display: flex;
+  flex-direction: row;
 }
 </style>

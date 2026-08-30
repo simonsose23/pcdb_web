@@ -53,38 +53,60 @@ let qBuilder = ref(new QueryBuilder())
 <template>
   <div id="container">
     <h3>Filter</h3>
-    <p>Write own expression:</p>
-    <input type="text" v-model="customText">
-    <button @click="sendCustomRequest()">Send</button>
+    <div id="section">
+      <p>Write own expression:</p>
+      <input type="text" v-model="customText">
+      <button @click="sendCustomRequest()">Send</button>
+    </div>
 
-    <p>Serialized expression: {{ qBuilder.serialize() }}</p>
-    <FilterOperator v-if="isOp(qBuilder.base_expression)" :op="qBuilder.base_expression as Operator" />
-    <FilterAtomicExpression v-if="isAe(qBuilder.base_expression)" :ae="qBuilder.base_expression as
-      AtomicExpression" />
-    <FilterNegation v-if="isNeg(qBuilder.base_expression)" :neg="qBuilder.base_expression as Negation" />
+    <div id="section">
+      <p>Serialized expression: {{ qBuilder.serialize() }}</p>
 
-    <button v-if="qBuilder.base_expression !== null" @click="qBuilder.base_expression = null">X</button>
+      <div id="op_base">
+        <FilterOperator v-if="isOp(qBuilder.base_expression)" :op="qBuilder.base_expression as Operator" />
+        <FilterAtomicExpression v-if="isAe(qBuilder.base_expression)" :ae="qBuilder.base_expression as
+          AtomicExpression" />
+        <FilterNegation v-if="isNeg(qBuilder.base_expression)" :neg="qBuilder.base_expression as Negation" />
 
-    <template v-if="qBuilder.base_expression == null">
-      <!-- Button to add new operator -->
-      <button @click="addOp(new Operator('xor'))">
-        NEW OP
-      </button>
+        <button v-if="qBuilder.base_expression !== null" @click="qBuilder.base_expression = null">X</button>
+      </div>
 
-      <!-- Button to add new atomic expression -->
-      <button @click="addAe(new AtomicExpression('geq'))">
-        NEW AE
-      </button>
+      <template v-if="qBuilder.base_expression == null">
+        <div id="btns">
+          <!-- Button to add new operator -->
+          <button @click="addOp(new Operator('xor'))">
+            NEW OP
+          </button>
 
-      <!-- Button to add new negated expression -->
-      <button @click="addNeg(new Negation())">
-        NEW NEGATION
-      </button>
-    </template>
+          <!-- Button to add new atomic expression -->
+          <button @click="addAe(new AtomicExpression('geq'))">
+            NEW AE
+          </button>
 
-    <!-- Send the request -->
-    <button @click="sendFilterRequest()">Filter</button>
+          <!-- Button to add new negated expression -->
+          <button @click="addNeg(new Negation())">
+            NEW NEGATION
+          </button>
+        </div>
+      </template>
+
+      <!-- Send the request -->
+      <button @click="sendFilterRequest()">Send Filter Request</button>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#section {
+  margin-bottom: 20px;
+}
+
+#section:last-child {
+  margin-bottom: 0;
+}
+
+#op_base {
+  display: flex;
+  flex-direction: row;
+}
+</style>
