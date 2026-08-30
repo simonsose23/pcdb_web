@@ -40,7 +40,8 @@ export class AtomicExpression implements SerializableExpression {
 
 export class Operator implements SerializableExpression {
   op_string: string;
-  expressions: SerializableExpression[] = []
+  expression_a: SerializableExpression | undefined = undefined
+  expression_b: SerializableExpression | undefined = undefined
 
   constructor(op_string: string) {
     this.op_string = op_string;
@@ -49,12 +50,12 @@ export class Operator implements SerializableExpression {
   serialize(): string {
     let s = "("
 
-    if (this.expressions.length > 0) {
-      s += this.expressions[0]!.serialize()
+    if (this.expression_a) {
+      s += this.expression_a.serialize()
 
-      for (let i = 1; i < this.expressions.length; i++) {
+      if (this.expression_b) {
         s += ' ' + this.op_string + ' '
-        s += this.expressions[i]!.serialize()
+        s += this.expression_b!.serialize()
       }
     }
 
