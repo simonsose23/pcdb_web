@@ -44,14 +44,20 @@ function formatDate(date: Date): string {
     </select>
     <div>
       <!-- Input  -->
+
+      <!-- String input -->
       <v-select v-if="['String', 'Option < String >'].includes(props.ae!.cmp_target?.type!)"
         v-model="props.ae!.input_var" :options="distVals" style="background-color: white; color: black;"></v-select>
-      <input v-if="['i32', 'i64'].includes(props.ae!.cmp_target?.type!)" type="number" step="1"
-        v-model="props.ae!.input_var">
-      <input v-if="['f32', 'f64'].includes(props.ae!.cmp_target?.type!)" type="number" step="any"
-        v-model="props.ae!.input_var">
+
+      <!-- Datetime input -->
       <VueDatePicker v-if="['NaiveDateTime', 'Option < NaiveDateTime >'].includes(props.ae!.cmp_target?.type!)"
         v-model="props.ae!.input_var"></VueDatePicker>
+
+      <!-- Number input -->
+      <div v-if="['f32', 'f64', 'i32', 'i64'].includes(props.ae!.cmp_target?.type!)">
+        <input type="number" step="any" v-model="props.ae!.input_var"><button
+          @click="props.ae!.input_var = null">X</button>
+      </div>
     </div>
   </div>
 </template>
