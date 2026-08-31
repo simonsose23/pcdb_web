@@ -4,6 +4,7 @@ import PCFilter from './components/PCFilter.vue'
 import PolygonCanvas from './components/PolygonCanvas.vue'
 import { isPolygon, type Polygons } from './util/Polygon.ts'
 import '@vuepic/vue-datepicker/dist/main.css'
+import PolygonEditor from './components/PolygonEditor.vue'
 
 const pc_metas = ref(null)
 const upload_files = ref<File[]>([])
@@ -37,6 +38,7 @@ async function upload() {
 
 <template>
   <h2>Point Cloud Database</h2>
+  <PolygonEditor></PolygonEditor>
   <PCFilter v-model="pc_metas" />
   <template v-if="pc_metas">
     <table>
