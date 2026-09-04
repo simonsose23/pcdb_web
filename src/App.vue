@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import PCFilter from './components/PCFilter.vue'
 import PolygonCanvas from './components/PolygonCanvas.vue'
-import { isPolygon, type Polygons } from './util/Polygon.ts'
 import '@vuepic/vue-datepicker/dist/main.css'
 import PolygonEditor from './components/PolygonEditor.vue'
+import { isMultiPolygon, isPolygon, type MultiPolygon } from './util/Polygon'
 
 const pc_metas = ref(null)
 const upload_files = ref<File[]>([])
@@ -53,10 +53,10 @@ async function upload() {
       <template v-for="pc in pc_metas">
         <tr>
           <template v-for="val in Object.values(pc)">
-            <td v-if="isPolygon(val)">
-              <PolygonCanvas :data="val as Polygons" :extent="{ width: 100, height: 80 }"></PolygonCanvas>
+            <td v-if="isMultiPolygon(val) || isPolygon(val)">
+              <PolygonCanvas :data="val" :extent="{ width: 100, height: 80 }"></PolygonCanvas>
             </td>
-            <td v-if="!isPolygon(val)">
+            <td v-if="!isMultiPolygon(val) && !isPolygon(val)">
               {{ val }}
             </td>
           </template>
