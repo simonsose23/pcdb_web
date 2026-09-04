@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Polygons } from '@/util/Polygon';
+import { isMultiPolygon, isPolygon, type MultiPolygon, type Polygon, type RawPolygon } from '@/util/Polygon';
 import { onMounted, useTemplateRef } from 'vue';
 
-const props = defineProps<{ data: Polygons, extent: { width: number, height: number } }>()
+const props = defineProps<{ data: any, extent: { width: number, height: number } }>()
 
 const canvas = useTemplateRef('canvas')
 
@@ -19,8 +19,8 @@ function draw() {
   let maxY = -Infinity
 
   // Compute bounding box
-  props.data!.polygons.forEach(p => {
-    p.rings.forEach(r => {
+  function processRawPolygonBbox(rPolygon: RawPolygon) {
+    rPolygon.rings.forEach(r => {
       r.forEach(pos => {
         minX = Math.min(minX, pos.x)
         minY = Math.min(minY, pos.y)
@@ -28,7 +28,22 @@ function draw() {
         maxY = Math.max(maxY, pos.y)
       })
     })
-  })
+  }
+
+  console.log("DATA:")
+  console.log(props.data!)
+
+  // Case MultiPolygon
+  if (isMultiPolygon(props.data!)) {
+    props.data!.MultiPolygon.polygons.forEach(p => {
+      processRawPolygonBbox(p)
+    })
+  }
+
+  // Case Polygon
+  if (isPolygon(props.data!)) {
+    processRawPolygonBbox(props.data!.Polygon)
+  }
 
   const getBboxCenter = () => {
     const centerX = (minX + maxX) / 2
@@ -74,8 +89,8 @@ function draw() {
   // Draw polygons
   ctx?.beginPath()
 
-  props.data!.polygons.forEach(p => {
-    p.rings.forEach(r => {
+  function drawRawPolygon(rPolygon: RawPolygon) {
+    rPolygon.rings.forEach(r => {
       r.forEach((pos, i) => {
         const scaledPos = scale(pos)
         if (i === 0) {
@@ -86,7 +101,19 @@ function draw() {
       })
       ctx?.closePath()
     })
-  })
+  }
+
+  // Case MultiPolygon
+  if (isMultiPolygon(props.data!)) {
+    props.data!.MultiPolygon.polygons.forEach(p => {
+      drawRawPolygon(p)
+    })
+  }
+
+  // Case Polygon
+  if (isPolygon(props.data!)) {
+    drawRawPolygon(props.data!.Polygon)
+  }
 
   ctx!.lineWidth = 2
   ctx!.strokeStyle = 'red'
