@@ -27,8 +27,10 @@ export class AtomicExpression implements SerializableExpression {
 
     if (input_var instanceof Date) {
       input_var = (input_var as Date).toISOString()
+    } else if (typeof input_var === 'string') {
+      input_var = '"' + input_var + '"'
     } else if (input_var == null) {
-      input_var = '~'
+      input_var = 'null'
     }
 
     s += input_var + ')'
