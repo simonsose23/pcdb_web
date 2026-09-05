@@ -9,7 +9,7 @@ export interface SerializableExpression {
 
 export class AtomicExpression implements SerializableExpression {
   expr_string: string;
-  input_var: string | number | Date | null = null
+  input_var: string | number | Date | number[][] | null = null
   cmp_target: Column | undefined = undefined
 
   constructor(expr_string: string) {
@@ -29,6 +29,8 @@ export class AtomicExpression implements SerializableExpression {
       input_var = (input_var as Date).toISOString()
     } else if (typeof input_var === 'string') {
       input_var = '"' + input_var + '"'
+    } else if (Array.isArray(input_var)) {
+      input_var = "[" + input_var.flat().toString().replaceAll(' ', '') + "]";
     } else if (input_var == null) {
       input_var = 'null'
     }

@@ -38,9 +38,8 @@ async function upload() {
 
 <template>
   <h2>Point Cloud Database</h2>
-  <PolygonEditor></PolygonEditor>
   <PCFilter v-model="pc_metas" />
-  <template v-if="pc_metas">
+  <template v-if="Array.isArray(pc_metas) && (pc_metas as Object[]).length > 0">
     <table>
       <tr>
         <template v-for="key in Object.keys(pc_metas[0])">

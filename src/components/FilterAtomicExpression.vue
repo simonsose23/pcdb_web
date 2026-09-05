@@ -2,16 +2,19 @@
 import { AtomicExpression } from '@/util/QueryBuilder';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { ref } from 'vue';
+import PolygonEditor from './PolygonEditor.vue';
 
 const props = defineProps({ ae: AtomicExpression })
 
 let distVals = ref<string[]>([])
 
 async function updateDistinct() {
+  if (!['String', 'Option < String >'].includes(props.ae!.cmp_target?.type!)) return
   const distinctVals = await fetch("http://localhost:8080/distinct/" + props.ae!.cmp_target?.name!);
 
   distVals.value = await distinctVals.json() as string[]
 
+  // TODO: Update this
   delete distVals.value[0]
   console.log("updated distVals!")
   console.log(distVals.value)
@@ -41,6 +44,10 @@ function formatDate(date: Date): string {
         <option name="like">=</option>
         <option name="notlike">!=</option>
       </template>
+      <!-- Comparator set for polygon> -->
+      <template v-if="['GeometryContainer < Point >'].includes(props.ae!.cmp_target?.type!)">
+        <option name="intersect">=</option>
+      </template>
     </select>
     <div>
       <!-- Input  -->
@@ -51,12 +58,17 @@ function formatDate(date: Date): string {
 
       <!-- Datetime input -->
       <VueDatePicker v-if="['NaiveDateTime', 'Option < NaiveDateTime >'].includes(props.ae!.cmp_target?.type!)"
-        v-model="props.ae!.input_var"></VueDatePicker>
+        v-model="props.ae!.input_var as Date"></VueDatePicker>
 
       <!-- Number input -->
       <div v-if="['f32', 'f64', 'i32', 'i64'].includes(props.ae!.cmp_target?.type!)">
         <input type="number" step="any" v-model="props.ae!.input_var"><button
           @click="props.ae!.input_var = null">X</button>
+      </div>
+
+      <!-- Polygon input -->
+      <div v-if="['GeometryContainer < Point >'].includes(props.ae!.cmp_target?.type!)">
+        <PolygonEditor @mapUpdate="props.ae!.input_var = $event"></PolygonEditor>
       </div>
     </div>
   </div>

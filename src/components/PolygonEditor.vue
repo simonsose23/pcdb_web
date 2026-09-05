@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import "leaflet/dist/leaflet.css"
 import { LMap, LTileLayer, LPolygon } from "@vue-leaflet/vue-leaflet";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const zoom = ref(10)
 
-const polyLatLngs = ref<number[][]>([])
+const emit = defineEmits(['mapUpdate'])
 
+const polyLatLngs = ref<number[][]>([])
 
 function mapClick(e: any) {
   const latLng = e.latlng;
 
   polyLatLngs.value.push([latLng.lat, latLng.lng])
 
-  console.log(polyLatLngs)
+  emit('mapUpdate', polyLatLngs.value)
+}
+
+function clearPolygon() {
+  polyLatLngs.value = []
+  emit('mapUpdate', [])
 }
 </script>
 
@@ -25,6 +31,7 @@ function mapClick(e: any) {
       <l-polygon :latLngs="polyLatLngs" :key="polyLatLngs.length"></l-polygon>
     </l-map>
   </div>
+  <button @click="clearPolygon()">Clear Polygon</button>
 </template>
 
 <style scoped></style>
