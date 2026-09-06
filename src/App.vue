@@ -14,8 +14,6 @@ async function get_pc_metas() {
   const req = await fetch("http://localhost:8080/list/", { method: 'GET', headers: { Accept: 'application/json' } })
 
   pc_metas.value = await req.json()
-
-  console.log(pc_metas.value)
 }
 
 get_pc_metas()

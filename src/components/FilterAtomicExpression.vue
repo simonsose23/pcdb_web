@@ -16,8 +16,6 @@ async function updateDistinct() {
 
   // TODO: Update this
   delete distVals.value[0]
-  console.log("updated distVals!")
-  console.log(distVals.value)
 }
 
 function formatDate(date: Date): string {

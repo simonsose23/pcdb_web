@@ -32,8 +32,6 @@ async function sendCustomRequest() {
       customText, headers: { "Content-Type": "text/plain" }
   })
 
-  console.log(model.value)
-
   if (res.status == 200) {
     model.value = await res.json()
     err_msgs.value!.err_custom = undefined

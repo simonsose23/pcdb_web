@@ -30,9 +30,6 @@ function draw() {
     })
   }
 
-  console.log("DATA:")
-  console.log(props.data!)
-
   // Case MultiPolygon
   if (isMultiPolygon(props.data!)) {
     props.data!.MultiPolygon.polygons.forEach(p => {
@@ -118,7 +115,6 @@ function draw() {
   ctx!.lineWidth = 2
   ctx!.strokeStyle = 'red'
   ctx?.stroke()
-  console.log('stroke')
 }
 
 onMounted(() => draw())

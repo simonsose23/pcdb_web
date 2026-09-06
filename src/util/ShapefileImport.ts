@@ -24,7 +24,5 @@ export async function shapefileToArray(buf: ArrayBuffer) {
     featureCollection = geojson;
   }
 
-  console.log(featureCollection)
-
   return featureCollection?.features[0]?.geometry.coordinates
 }
