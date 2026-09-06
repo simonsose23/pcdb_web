@@ -2,12 +2,14 @@
 import "leaflet/dist/leaflet.css"
 import { LMap, LTileLayer, LPolygon } from "@vue-leaflet/vue-leaflet";
 import { onMounted, ref } from "vue";
+import { shapefileToArray } from "@/util/ShapefileImport";
 
 const zoom = ref(10)
 
 const emit = defineEmits(['mapUpdate'])
 
 const polyLatLngs = ref<number[][]>([])
+const fileInputRef = ref<HTMLInputElement | null>(null)
 
 function mapClick(e: any) {
   const latLng = e.latlng;
@@ -21,6 +23,22 @@ function clearPolygon() {
   polyLatLngs.value = []
   emit('mapUpdate', [])
 }
+
+function openFilePicker() {
+  if (fileInputRef.value) {
+    fileInputRef.value.click()
+  }
+}
+
+
+async function handleFileSelect(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  polyLatLngs.value = await shapefileToArray(await file?.arrayBuffer()!);
+
+  emit('mapUpdate', polyLatLngs.value);
+}
 </script>
 
 <template>
@@ -32,6 +50,8 @@ function clearPolygon() {
     </l-map>
   </div>
   <button @click="clearPolygon()">Clear Polygon</button>
+  <button @click="openFilePicker()">Load Polygon from File</button>
+  <input ref="fileInputRef" type="file" accept=".zip" style="display: none;" @change="handleFileSelect($event)" />
 </template>
 
 <style scoped></style>
