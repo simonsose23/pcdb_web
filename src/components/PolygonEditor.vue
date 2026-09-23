@@ -2,7 +2,7 @@
 import "leaflet/dist/leaflet.css"
 import { LMap, LTileLayer, LPolygon } from "@vue-leaflet/vue-leaflet";
 import { onMounted, ref } from "vue";
-import { shapefileToArray } from "@/util/ShapefileImport";
+import { epsgFromShapefile, shapefileToArray } from "@/util/ShapefileImport";
 
 const zoom = ref(10)
 
@@ -25,6 +25,7 @@ function clearPolygon() {
 }
 
 function openFilePicker() {
+  epsgFromShapefile();
   if (fileInputRef.value) {
     fileInputRef.value.click()
   }
