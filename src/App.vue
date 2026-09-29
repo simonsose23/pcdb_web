@@ -99,6 +99,14 @@ async function upload() {
       </p>
     </div>
   </div>
+    <div v-if="upload_status">
+      <p v-if="!upload_status!.error">{{ upload_status.text }}</p>
+      <p v-if="upload_status!.error">
+      <p style="font-weight: bold; margin-right: 5px;">ERR:</p>
+      <p>{{ upload_status.text }}</p>
+      </p>
+    </div>
+  </div>
 </template>
 
 <style scoped>
