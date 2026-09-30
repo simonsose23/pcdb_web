@@ -14,8 +14,7 @@ async function updateDistinct() {
 
   distVals.value = await distinctVals.json() as string[]
 
-  // TODO: Update this
-  delete distVals.value[0]
+  distVals.value = distVals.value.filter(x => x !== undefined && x !== "")
 }
 
 function formatDate(date: Date): string {
