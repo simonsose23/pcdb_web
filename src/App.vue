@@ -7,10 +7,14 @@ import PolygonEditor from './components/PolygonEditor.vue'
 import { isMultiPolygon, isPolygon, type MultiPolygon } from './util/Polygon'
 
 type GeoreferencedPointCloud = { file: File, crs: String | undefined }
+type LinkRequest = { fpath: string | undefined, crs: string | undefined }
 
 const pc_metas = ref(null)
 const upload_pcs = ref<GeoreferencedPointCloud[]>([])
 const upload_status = ref<{ text: string, error: boolean } | undefined>(undefined)
+
+const link_req = ref<LinkRequest>({ fpath: undefined, crs: undefined })
+const link_req_status = ref<{ text: string, error: boolean } | undefined>(undefined)
 
 async function get_pc_metas() {
 
@@ -39,6 +43,20 @@ async function upload() {
     upload_status.value = { text: upload_pcs.value[0]!.file.name + ": Upload successful.", error: false }
   } else {
     upload_status.value = { text: await res.text() as string, error: true }
+  }
+}
+
+async function link() {
+  link_req_status.value = { text: "Linking " + link_req.value.fpath + "...", error: false }
+
+  const res = await fetch("http://localhost:8080/link/", {
+    method: 'POST', body: JSON.stringify(link_req.value), headers: { "Content-Type": "text/plain" }
+  })
+
+  if (res.status == 200) {
+    link_req_status.value = { text: link_req.value.fpath + ": Linking successful.", error: false }
+  } else {
+    link_req_status.value = { text: await res.text() as string, error: true }
   }
 }
 </script>
@@ -91,6 +109,7 @@ async function upload() {
       <label class="btn" for="upload-btn" v-if="upload_pcs.length > 0">Start Upload</label>
     </div>
 
+    <!-- Error display -->
     <div v-if="upload_status">
       <p v-if="!upload_status!.error">{{ upload_status.text }}</p>
       <p v-if="upload_status!.error">
@@ -99,11 +118,25 @@ async function upload() {
       </p>
     </div>
   </div>
-    <div v-if="upload_status">
-      <p v-if="!upload_status!.error">{{ upload_status.text }}</p>
-      <p v-if="upload_status!.error">
+  <div id="container">
+    <h2>Link</h2>
+    <!-- File select -->
+    <div>
+      <input type="string" v-model="link_req.fpath" placeholder="File path">
+      <input type="string" v-model="link_req.crs" placeholder="CRS">
+    </div>
+
+    <!-- Send request -->
+    <div v-if="link_req.crs && link_req.fpath">
+      <button @click="link">Link</button>
+    </div>
+
+    <!-- Error display -->
+    <div v-if="link_req_status">
+      <p v-if="!link_req_status!.error">{{ link_req_status.text }}</p>
+      <p v-if="link_req_status!.error">
       <p style="font-weight: bold; margin-right: 5px;">ERR:</p>
-      <p>{{ upload_status.text }}</p>
+      <p>{{ link_req_status.text }}</p>
       </p>
     </div>
   </div>
