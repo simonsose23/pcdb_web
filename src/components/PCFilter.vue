@@ -27,6 +27,9 @@ function addNeg(new_neg: Negation) {
 }
 
 async function sendCustomRequest() {
+  //Force PolygonCanvas redraw
+  model.value = undefined
+
   const res = await fetch("http://localhost:8080/filter/", {
     method: "POST", body:
       customText, headers: { "Content-Type": "text/plain" }
@@ -41,6 +44,9 @@ async function sendCustomRequest() {
 }
 
 async function sendFilterRequest() {
+  //Force PolygonCanvas redraw
+  model.value = undefined
+
   const res = await fetch("http://localhost:8080/filter/", {
     method: "POST", body:
       qBuilder.value.base_expression?.serialize(), headers: { "Content-Type": "text/plain" }
