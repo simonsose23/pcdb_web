@@ -17,7 +17,11 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@types/shpjs": "^3.4.7",
     "@vuepic/vue-datepicker": "^14.0.0",
+    "jszip": "^3.10.2",
+    "proj4": "^2.22.0",
+    "shpjs": "^6.2.0",
     "vue": "^3.5.38",
     "vue-select": "^4.0.0-beta.6"
   },
@@ -30,6 +34,7 @@
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitejs/plugin-vue-jsx": "^5.1.5",
     "@vitest/eslint-plugin": "^1.6.20",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@vue/eslint-config-typescript": "^14.8.0",
     "@vue/test-utils": "^2.4.11",
     "@vue/tsconfig": "^0.9.1",
@@ -40,6 +45,7 @@
     "eslint-plugin-vue": "~10.9.2",
     "jiti": "^2.7.0",
     "jsdom": "^29.1.1",
+    "leaflet": "^1.9.4",
     "npm-run-all2": "^9.0.2",
     "oxlint": "~1.69.0",
     "prettier": "3.8.4",
